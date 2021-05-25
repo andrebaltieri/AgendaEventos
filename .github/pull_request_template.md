@@ -1,5 +1,3 @@
-![Git Merge](https://media.giphy.com/media/cFkiFMDg3iFoI/giphy.gif)
-
 ### Status
 
 READY / IN DEVELOPMENT
