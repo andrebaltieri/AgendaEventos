@@ -26,4 +26,3 @@ Add additional informations like screenshots, issue link.
 - [ ] Implements unit tests
 - [ ] Does this add new dependencies?
 - [ ] Does need update readme, contributing, etc?
-- [ ] Will this feature require a new piece of infrastructure be implemented?
