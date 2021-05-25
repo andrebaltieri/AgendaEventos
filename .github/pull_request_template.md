@@ -2,7 +2,7 @@
 
 READY / IN DEVELOPMENT
 
-### Whats?
+### What's?
 
 Describe in an objective way what has been done.
 
