@@ -1,5 +1,5 @@
 CREATE DATABASE [Agenda]
-GO
+GO 
 
 USE [Agenda]
 GO
