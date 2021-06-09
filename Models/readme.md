@@ -1,1 +1,0 @@
-Mover os models para cá (Entity.cs, Event.cs...)
