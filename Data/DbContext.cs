@@ -13,7 +13,7 @@ namespace Agenda.Data
         }
 
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Entity> Entites { get; set; }
+        public DbSet<Entity> Entities { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
