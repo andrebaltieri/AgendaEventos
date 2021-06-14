@@ -80,7 +80,30 @@ namespace Agenda.Controllers
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteRoleAsync(int id)
+        {
+            try
+            {
+                var role = await _context.Roles.FindAsync(id);
+
+                if (role is null)
+                {
+                    return NotFound();
+                }
+
+                _context.Roles.Remove(role);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
