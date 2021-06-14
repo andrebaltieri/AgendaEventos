@@ -16,5 +16,22 @@ namespace Agenda.Controllers
         {
             _context = context;
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Role>> Create(Role model)
+        {
+            try
+            {
+                await _context.Roles.AddAsync(model);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(Create), new { id = model.Id }, model);
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
