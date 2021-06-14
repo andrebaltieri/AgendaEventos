@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Agenda.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class RolesController : ControllerBase
     {
