@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Agenda.Controllers
@@ -38,5 +39,18 @@ namespace Agenda.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>> GetRolesAsync() => Ok(await _context.Roles.AsNoTracking().ToListAsync());
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoleByIdAsync(int id)
+        {
+            var role = await _context.Roles.FindAsync(id);
+
+            if (role is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(role);
+        }
     }
 }
