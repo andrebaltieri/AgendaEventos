@@ -28,7 +28,7 @@ namespace Agenda.Controllers
                 await _context.Roles.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(CreateAsync), new { id = model.Id }, model);
+                return CreatedAtAction(nameof(GetRoleByIdAsync), new { id = model.Id }, model);
             }
             catch (Exception ex)
             {
