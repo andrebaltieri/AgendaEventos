@@ -3,6 +3,7 @@ using Agenda.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,6 +52,35 @@ namespace Agenda.Controllers
             }
 
             return Ok(role);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateRoleAsync(int id, Role model)
+        {
+            try
+            {
+                var role = await _context.Roles.FindAsync(id);
+
+                if (role is null)
+                {
+                    return NotFound();
+                }
+
+                role.Title = model.Title;
+                role.Description = model.Description;
+                role.LastUpdatedDate = DateTime.Now;
+
+                _context.Entry(role).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
     }
 }
