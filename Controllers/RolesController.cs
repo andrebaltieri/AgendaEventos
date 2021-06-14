@@ -18,14 +18,14 @@ namespace Agenda.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Role>> Create(Role model)
+        public async Task<ActionResult<Role>> CreateAsync(Role model)
         {
             try
             {
                 await _context.Roles.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(Create), new { id = model.Id }, model);
+                return CreatedAtAction(nameof(CreateAsync), new { id = model.Id }, model);
             }
             catch (System.Exception ex)
             {
