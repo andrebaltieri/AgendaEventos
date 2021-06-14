@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Agenda.Controllers
@@ -31,7 +30,7 @@ namespace Agenda.Controllers
 
                 return CreatedAtAction(nameof(CreateAsync), new { id = model.Id }, model);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -75,7 +74,7 @@ namespace Agenda.Controllers
 
                 return NoContent();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -99,7 +98,7 @@ namespace Agenda.Controllers
 
                 return NoContent();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
