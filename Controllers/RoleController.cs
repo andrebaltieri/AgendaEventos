@@ -11,11 +11,11 @@ namespace Agenda.Controllers
 {
     [Route("api/v1/roles")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class RoleController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public RolesController(DataContext context)
+        public RoleController(DataContext context)
         {
             _context = context;
         }
