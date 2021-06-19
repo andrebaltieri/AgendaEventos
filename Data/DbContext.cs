@@ -12,12 +12,5 @@ namespace Agenda.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Role>().ToTable(nameof(Role));
-        }
     }
 }
