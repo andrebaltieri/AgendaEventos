@@ -62,7 +62,7 @@ namespace AgendaEventos.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateCategoryAsync(int id, [FromBody]Category model)
+        public async Task<ActionResult> UpdateCategoryAsync(int id, Category model)
         {
             try
             {
@@ -70,11 +70,12 @@ namespace AgendaEventos.Controllers
                 if (category is null)
                     return NotFound();
 
+                category.Id = model.Id;
                 category.Title = model.Title;
                 category.Description = model.Description;
                 category.Active = model.Active;
 
-                _context.Entry(model).State = EntityState.Modified;
+                _context.Entry(category).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 return NoContent();
@@ -87,7 +88,7 @@ namespace AgendaEventos.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Category>> GetCa()
+        public async Task<IEnumerable<Category>> GetCategory()
         {
             return await _context.Categories.AsNoTracking().ToListAsync();
         }
