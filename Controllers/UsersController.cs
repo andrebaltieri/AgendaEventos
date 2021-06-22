@@ -33,11 +33,6 @@ public class UsersController : ControllerBase
             
             context.Users.Add(user);
             await context.SaveChangesAsync();
-
-            /* Insert in table 'UserRoles' 
-                UserId = user.Id;
-                RoleId = roles.FirstOrDefault().Id;
-            */
             
             return Ok(user);
         }
