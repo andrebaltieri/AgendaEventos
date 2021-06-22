@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using Agenda.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AgendaEventos.Models
 {
+    [Table(nameof(User))]
     public class User : Entity
     {
         [Required(ErrorMessage = "Esse campo e obrigatorio")]
@@ -20,11 +22,9 @@ namespace AgendaEventos.Models
         [MaxLength(20, ErrorMessage = "Esse campo deve conter entre 3 e 20 caracteres.")]
         [MinLength(3, ErrorMessage = "Esse campo deve conter entre 3 e 20 caracteres.")]
         public string Password { get; set; }
-
-        [Required(ErrorMessage = "Esse campo e obrigatorio")]
-        [Range(1, int.MaxValue, ErrorMessage = "Tipo de usuario invalido")]
+        
+        [NotMapped]
         public int RoleId { get; set; }
-
         public IList<Role> Roles { get; set; }
     }
 }

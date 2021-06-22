@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Agenda.Data;
 using AgendaEventos.Models;
@@ -19,14 +20,30 @@ public class UsersController : ControllerBase
 
         try
         {
+            var roles = await context.Roles.AsNoTracking().ToListAsync();
+            if (roles.Count == 0)
+                return BadRequest(new {message = "Nao foi possível incluir um novo usuário."});
+            
+            if (user.RoleId != 0)
+            {
+                var role = roles.FirstOrDefault(r => r.Id == user.RoleId);
+                if (role == null)
+                    return BadRequest(new {message = "Nao foi possível incluir um novo usuário."});
+            }
+            
             context.Users.Add(user);
             await context.SaveChangesAsync();
 
+            /* Insert in table 'UserRoles' 
+                UserId = user.Id;
+                RoleId = roles.FirstOrDefault().Id;
+            */
+            
             return Ok(user);
         }
         catch
         {
-            return BadRequest(new { message = "Nao foi possivel incluir um novo usuario." });
+            return BadRequest(new {message = "Nao foi possivel incluir um novo usuario."});
         }
     }
 
@@ -56,10 +73,10 @@ public class UsersController : ControllerBase
     [HttpPut]
     [Route("{id:int}")]
     public async Task<ActionResult<User>> Put(int id,
-    [FromBody] User user,
-    [FromServices] DataContext context)
+        [FromBody] User user,
+        [FromServices] DataContext context)
     {
-        if (user.Id != id) return NotFound(new { message = "Usuario nao encontrado" });
+        if (user.Id != id) return NotFound(new {message = "Usuario nao encontrado"});
 
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -68,11 +85,10 @@ public class UsersController : ControllerBase
             context.Entry<User>(user).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return user;
-
         }
         catch
         {
-            return BadRequest(new { message = "Nao foi possivel alterar os dados do usuario." });
+            return BadRequest(new {message = "Nao foi possivel alterar os dados do usuario."});
         }
     }
 
@@ -86,7 +102,7 @@ public class UsersController : ControllerBase
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
         if (user == null)
-            return NotFound(new { message = "Usuario nao encontrado." });
+            return NotFound(new {message = "Usuario nao encontrado."});
 
         try
         {
@@ -96,7 +112,7 @@ public class UsersController : ControllerBase
         }
         catch
         {
-            return BadRequest(new { message = "Nao foi possivel excluir o usuario." });
+            return BadRequest(new {message = "Nao foi possivel excluir o usuario."});
         }
     }
 }
