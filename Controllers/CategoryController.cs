@@ -70,7 +70,6 @@ namespace AgendaEventos.Controllers
                 if (category is null)
                     return NotFound();
 
-                category.Id = model.Id;
                 category.Title = model.Title;
                 category.Description = model.Description;
                 category.Active = model.Active;
