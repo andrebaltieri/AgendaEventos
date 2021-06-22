@@ -107,7 +107,7 @@ namespace Agenda.Controllers
             {
                 _context.Remove(events);
                 await _context.SaveChangesAsync();
-                return events;
+                return Ok();
             }
             catch (Exception)
             {
