@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Agenda.Data;
 using Agenda.Models;
@@ -14,7 +13,6 @@ namespace AgendaEventos.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-
         private readonly DataContext _context;
 
         public CategoryController(DataContext context)
@@ -87,20 +85,20 @@ namespace AgendaEventos.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Category>> GetCategory()
+        public async Task<IEnumerable<Category>> GetCategoriesAsync()
         {
             return await _context.Categories.AsNoTracking().ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategoriesAsync(int id)
+        public async Task<ActionResult<Category>> GetCategoryByIdAsync(int id)
         {
             var categories = await _context.Categories.FindAsync(id);
 
             if (categories is null)
                 return NotFound();
 
-            return Ok();
+            return Ok(categories);
         }
     }
 }
