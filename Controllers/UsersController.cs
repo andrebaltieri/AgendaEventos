@@ -1,10 +1,13 @@
+using Agenda.Data;
+using Agenda.Models;
+using AgendaEventos.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Agenda.Data;
-using AgendaEventos.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [Route("api/v1/users")]
 public class UsersController : ControllerBase
@@ -13,32 +16,40 @@ public class UsersController : ControllerBase
     [HttpPost]
     [Route("")]
     public async Task<ActionResult<User>> Post(
-        [FromBody] User user,
-        [FromServices] DataContext context)
+        [FromBody] User user, [FromServices] DataContext context)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
+        if (!user.Roles.Any())
+        {
+            return BadRequest("Informe um perfil de usuário");
+        }
+
         try
         {
-            var roles = await context.Roles.AsNoTracking().ToListAsync();
-            if (roles.Count == 0)
-                return BadRequest(new {message = "Nao foi possível incluir um novo usuário."});
-
-            if (user.RoleId != 0)
+            var roles = new List<Role>();
+            foreach (var role in user.Roles)
             {
-                var role = roles.FirstOrDefault(r => r.Id == user.RoleId);
-                if (role == null)
-                    return BadRequest(new {message = "Nao foi possível incluir um novo usuário."});
+                var hydratedRole = await context.Roles.FindAsync(role.Id);
+                if (hydratedRole is null)
+                {
+                    return BadRequest("Perfil de usuário não existe");
+                }
+
+                roles.Add(hydratedRole);
             }
 
-            context.Users.Add(user);
+            user.Roles = roles;
+
+            await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
 
-            return Ok(user);
+            return CreatedAtRoute(new { id = user.Id }, user);
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest(new {message = "Nao foi possivel incluir um novo usuario."});
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -56,8 +67,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     [Route("{id:int}")]
     public async Task<ActionResult<User>> GetById(
-        int id,
-        [FromServices] DataContext context)
+        int id, [FromServices] DataContext context)
     {
         var user = await context.Users.AsNoTracking()
             .Where(u => u.Id == id)
@@ -69,11 +79,9 @@ public class UsersController : ControllerBase
     //Alterar usuario
     [HttpPut]
     [Route("{id:int}")]
-    public async Task<ActionResult<User>> Put(int id,
-        [FromBody] User user,
-        [FromServices] DataContext context)
+    public async Task<ActionResult<User>> Put(int id, [FromBody] User user, [FromServices] DataContext context)
     {
-        if (user.Id != id) return NotFound(new {message = "Usuario nao encontrado"});
+        if (user.Id != id) return NotFound(new { message = "Usuario nao encontrado" });
 
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -85,7 +93,7 @@ public class UsersController : ControllerBase
         }
         catch
         {
-            return BadRequest(new {message = "Nao foi possivel alterar os dados do usuario."});
+            return BadRequest(new { message = "Nao foi possivel alterar os dados do usuario." });
         }
     }
 
@@ -93,13 +101,12 @@ public class UsersController : ControllerBase
     [HttpDelete]
     [Route("{id:int}")]
     public async Task<ActionResult<User>> Delete(
-        int id,
-        [FromServices] DataContext context)
+        int id, [FromServices] DataContext context)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
         if (user == null)
-            return NotFound(new {message = "Usuario nao encontrado."});
+            return NotFound(new { message = "Usuario nao encontrado." });
 
         try
         {
@@ -109,7 +116,7 @@ public class UsersController : ControllerBase
         }
         catch
         {
-            return BadRequest(new {message = "Nao foi possivel excluir o usuario."});
+            return BadRequest(new { message = "Nao foi possivel excluir o usuario." });
         }
     }
 }
