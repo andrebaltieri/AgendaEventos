@@ -1,6 +1,5 @@
 using Agenda.Data;
 using Agenda.Models;
-using AgendaEventos.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 [Route("api/v1/users")]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
     //Criar usuario
     [HttpPost]

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using Agenda.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AgendaEventos.Models
+namespace Agenda.Models
 {
     [Table(nameof(User))]
     public class User : Entity
@@ -22,7 +21,7 @@ namespace AgendaEventos.Models
         [MaxLength(20, ErrorMessage = "Esse campo deve conter entre 3 e 20 caracteres.")]
         [MinLength(3, ErrorMessage = "Esse campo deve conter entre 3 e 20 caracteres.")]
         public string Password { get; set; }
-        
+
         [NotMapped]
         public int RoleId { get; set; }
         public IList<Role> Roles { get; set; }
