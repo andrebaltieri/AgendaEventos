@@ -5,117 +5,97 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
-[Route("api/v1/users")]
-public class UserController : ControllerBase
+namespace Agenda.Controllers
 {
-    //Criar usuario
-    [HttpPost]
-    [Route("")]
-    public async Task<ActionResult<User>> Post(
-        [FromBody] User user, [FromServices] DataContext context)
+    [Route("api/v1/users")]
+    public class UserController : ControllerBase
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        private readonly DataContext _context;
 
-        if (!user.Roles.Any())
+        public UserController(DataContext context)
         {
-            return BadRequest("Informe um perfil de usuário");
+            _context = context;
         }
-
-        try
+        
+        [HttpPost]
+        public async Task<ActionResult<User>> CreateUserAsync([FromBody] User user)
         {
-            var roles = new List<Role>();
-            foreach (var role in user.Roles)
+            try
             {
-                var hydratedRole = await context.Roles.FindAsync(role.Id);
-                if (hydratedRole is null)
-                {
-                    return BadRequest("Perfil de usuário não existe");
-                }
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
 
-                roles.Add(hydratedRole);
+                return CreatedAtRoute(new { id = user.Id }, user);
             }
-
-            user.Roles = roles;
-
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-
-            return CreatedAtRoute(new { id = user.Id }, user);
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
-        catch (Exception ex)
+
+        [HttpGet]
+        public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return await _context.Users.AsNoTracking().ToListAsync();
         }
-    }
 
-    //Consultar lista de usuarios
-    [HttpGet]
-    [Route("")]
-    public async Task<ActionResult<List<User>>> Get(
-        [FromServices] DataContext context)
-    {
-        var users = await context.Users.AsNoTracking().ToListAsync();
-        return Ok(users);
-    }
-
-    //Consultar usuario especifico por id
-    [HttpGet]
-    [Route("{id:int}")]
-    public async Task<ActionResult<User>> GetById(
-        int id, [FromServices] DataContext context)
-    {
-        var user = await context.Users.AsNoTracking()
-            .Where(u => u.Id == id)
-            .FirstOrDefaultAsync();
-
-        return Ok(user);
-    }
-
-    //Alterar usuario
-    [HttpPut]
-    [Route("{id:int}")]
-    public async Task<ActionResult<User>> Put(int id, [FromBody] User user, [FromServices] DataContext context)
-    {
-        if (user.Id != id) return NotFound(new { message = "Usuario nao encontrado" });
-
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        try
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         {
-            context.Entry<User>(user).State = EntityState.Modified;
-            await context.SaveChangesAsync();
-            return user;
-        }
-        catch
-        {
-            return BadRequest(new { message = "Nao foi possivel alterar os dados do usuario." });
-        }
-    }
+            var user = await _context.Users.FindAsync(id);
+            if (user is null)
+                return NotFound();
 
-    //Excluir usuario
-    [HttpDelete]
-    [Route("{id:int}")]
-    public async Task<ActionResult<User>> Delete(
-        int id, [FromServices] DataContext context)
-    {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-        if (user == null)
-            return NotFound(new { message = "Usuario nao encontrado." });
-
-        try
-        {
-            context.Users.Remove(user);
-            await context.SaveChangesAsync();
             return Ok(user);
         }
-        catch
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<User>> UpdateUserAsync(int id, [FromBody] User model)
         {
-            return BadRequest(new { message = "Nao foi possivel excluir o usuario." });
+            var user = await _context.Users.FindAsync(id);
+            if (user is null)
+                return NotFound();
+
+            user.Name = model.Name;            
+            user.Password = model.Password;
+            user.Email = model.Email;
+            user.RoleId = model.RoleId;
+            user.LastUpdatedDate = DateTime.UtcNow;
+
+            try
+            {
+                _context.Entry<User>(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<User>> DeleteUserAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user is null)
+                return NotFound();
+
+            try
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
