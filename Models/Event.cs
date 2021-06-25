@@ -1,6 +1,5 @@
-using System.ComponentModel.DataAnnotations;
-using AgendaEventos.Models;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Agenda.Models
@@ -26,29 +25,29 @@ namespace Agenda.Models
     public DateTime StartDate { get; set; }
 
     [Required(ErrorMessage = "Este campo é obrigatório")]
-    [Range(1,60, ErrorMessage = "Este campo deve conter entre 1 e 60 minutos")]
+    [Range(1, 60, ErrorMessage = "Este campo deve conter entre 1 e 60 minutos")]
     public int DurationInMinutes { get; set; }
-    
+
     [Required(ErrorMessage = "Este campo é obrigatório")]
     [Column(TypeName = nameof(DateTime))]
     public DateTime EnrollmentDeadlineDate { get; set; }
-    
+
     [Required(ErrorMessage = "Este campo é obrigatório")]
     [MaxLength(1024, ErrorMessage = "Este campo deve conter no máximo 1024 caracteres")]
     public string UrlSegment { get; set; }
-    
+
     [Required(ErrorMessage = "Este campo é obrigatório")]
     [MaxLength(2000, ErrorMessage = "Este campo deve conter no máximo 2000 caracteres")]
     public string BannerUrl { get; set; }
-    
+
     [Required(ErrorMessage = "Este campo é obrigatório")]
     public bool Active { get; set; }
-    
+
     [Required(ErrorMessage = "Este campo é obrigatório")]
     [Range(1, int.MaxValue, ErrorMessage = "Tipo de usuario inválido")]
     public int OrganizerId { get; set; }
     public User Organizer { get; set; }
-    
+
     [Required(ErrorMessage = "Este campo é obrigatório")]
     [Range(1, int.MaxValue, ErrorMessage = "Categoria inválida")]
     public int CategoryId { get; set; }
