@@ -26,8 +26,7 @@ namespace Agenda
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(opt =>
-                //opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                opt.UseInMemoryDatabase("agenda")
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
             services.AddCors();

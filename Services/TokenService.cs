@@ -1,11 +1,10 @@
 using System;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
-using AgendaEventos.Models;
 using Microsoft.IdentityModel.Tokens;
+using Agenda.Models;
 
 namespace AgendaEventos.Services
 {

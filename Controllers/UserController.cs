@@ -17,12 +17,26 @@ namespace Agenda.Controllers
         {
             _context = context;
         }
-        
+
         [HttpPost]
         public async Task<ActionResult<User>> CreateUserAsync([FromBody] User user)
         {
             try
             {
+                var roles = new List<Role>();
+                foreach (var role in user.Roles)
+                {
+                    var hydratedRole = await _context.Roles.FindAsync(role.Id);
+                    if (hydratedRole is null)
+                    {
+                        return BadRequest("Perfil de usuário não existe");
+                    }
+
+                    roles.Add(hydratedRole);
+                }
+
+                user.Roles = roles;
+
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
 
@@ -38,7 +52,10 @@ namespace Agenda.Controllers
         [HttpGet]
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            return await _context.Users.AsNoTracking().ToListAsync();
+            return await _context
+                            .Users
+                            .AsNoTracking()
+                            .ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -58,7 +75,7 @@ namespace Agenda.Controllers
             if (user is null)
                 return NotFound();
 
-            user.Name = model.Name;            
+            user.Name = model.Name;
             user.Password = model.Password;
             user.Email = model.Email;
             user.RoleId = model.RoleId;
