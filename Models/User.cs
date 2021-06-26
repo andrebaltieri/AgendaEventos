@@ -7,23 +7,21 @@ namespace Agenda.Models
     [Table(nameof(User))]
     public class User : Entity
     {
-        [Required(ErrorMessage = "Esse campo e obrigatorio")]
+        [Required(ErrorMessage = "Esse campo é obrigatorio")]
+        [EmailAddress(ErrorMessage = "Informe um endereço de e-mail válido.")]
+        [MaxLength(254, ErrorMessage = "Esse campo deve conter no máximo 254 caracteres.")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Esse campo é obrigatorio")]
         [MaxLength(100, ErrorMessage = "Esse campo deve conter entre 3 e 100 caracteres.")]
         [MinLength(3, ErrorMessage = "Esse campo deve conter entre 3 e 100 caracteres.")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Esse campo e obrigatorio")]
-        [MaxLength(60, ErrorMessage = "Esse campo deve conter entre 3 e 60 caracteres.")]
-        [MinLength(3, ErrorMessage = "Esse campo deve conter entre 3 e 60 caracteres.")]
-        public string Email { get; set; }
-
-        [Required(ErrorMessage = "Esse campo e obrigatorio")]
+        [Required(ErrorMessage = "Esse campo é obrigatorio")]
         [MaxLength(20, ErrorMessage = "Esse campo deve conter entre 3 e 20 caracteres.")]
         [MinLength(3, ErrorMessage = "Esse campo deve conter entre 3 e 20 caracteres.")]
         public string Password { get; set; }
 
-        [NotMapped]
-        public int RoleId { get; set; }
         public virtual ICollection<Role> Roles { get; set; }
     }
 }
