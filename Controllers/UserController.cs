@@ -31,7 +31,7 @@ namespace Agenda.Controllers
                 var roles = new List<Role>();
                 foreach (var role in model.Roles)
                 {
-                    var roleSearch = await _context.Roles.SingleOrDefaultAsync(w => w.Id == role.Id);
+                    var roleSearch = await _context.Roles.FirstOrDefaultAsync(w => w.Id == role.Id);
                     if (roleSearch is null)
                         return NotFound(new { message = "Tipo de usuário informado é inválido." });
 
@@ -57,7 +57,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> DeleteUserAsync(int id)
         {
-            var user = await _context.Users.Include(r => r.Roles).SingleOrDefaultAsync(s => s.Id == id);
+            var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(s => s.Id == id);
             if (user is null)
                 return NotFound();
 
@@ -79,7 +79,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         {
-            var user = await _context.Users.Include(r => r.Roles).SingleAsync(w => w.Id == id);
+            var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
             if (user is null)
                 return NotFound();
 
@@ -104,7 +104,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUserAsync(int id, [FromBody] User model)
         {
-            var user = await _context.Users.Include(r => r.Roles).SingleOrDefaultAsync(w => w.Id == id);
+            var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
             if (user is null)
                 return NotFound();
 
