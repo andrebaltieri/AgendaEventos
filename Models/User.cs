@@ -22,6 +22,7 @@ namespace Agenda.Models
         [MinLength(3, ErrorMessage = "Esse campo deve conter entre 3 e 20 caracteres.")]
         public string Password { get; set; }
 
+        [MinLength(1, ErrorMessage = "Informe um perfil para o usuário")]
         public virtual ICollection<Role> Roles { get; set; }
     }
 }

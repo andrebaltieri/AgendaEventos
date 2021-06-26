@@ -26,14 +26,21 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> CreateUserAsync([FromBody] User model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var roles = new List<Role>();
                 foreach (var role in model.Roles)
                 {
-                    var roleSearch = await _context.Roles.FirstOrDefaultAsync(w => w.Id == role.Id);
+                    var roleSearch = await _context.Roles.FindAsync(role.Id);
                     if (roleSearch is null)
-                        return NotFound(new { message = "Tipo de usuário informado é inválido." });
+                    {
+                        return BadRequest(new { message = "Tipo de usuário informado é inválido." });
+                    }
 
                     roles.Add(roleSearch);
                 }
@@ -59,7 +66,9 @@ namespace Agenda.Controllers
         {
             var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(s => s.Id == id);
             if (user is null)
+            {
                 return NotFound();
+            }
 
             try
             {
@@ -81,7 +90,9 @@ namespace Agenda.Controllers
         {
             var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
             if (user is null)
+            {
                 return NotFound();
+            }
 
             return Ok(user);
         }
@@ -104,9 +115,16 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUserAsync(int id, [FromBody] User model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
             if (user is null)
+            {
                 return NotFound();
+            }
 
             _context.Entry(user).CurrentValues.SetValues(model);
 
@@ -114,6 +132,11 @@ namespace Agenda.Controllers
             foreach (var role in model.Roles)
             {
                 var roleSearch = await _context.Roles.FindAsync(role.Id);
+                if (roleSearch is null)
+                {
+                    return BadRequest(new { message = "Tipo de usuário informado é inválido." });
+                }
+
                 user.Roles.Add(roleSearch);
             }
 
