@@ -19,28 +19,25 @@ namespace Agenda.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUserAsync([FromBody] User user)
+        public async Task<ActionResult<User>> CreateUserAsync([FromBody] User model)
         {
             try
             {
                 var roles = new List<Role>();
-                foreach (var role in user.Roles)
+                foreach (var role in model.Roles)
                 {
-                    var hydratedRole = await _context.Roles.FindAsync(role.Id);
-                    if (hydratedRole is null)
-                    {
-                        return BadRequest("Perfil de usuário não existe");
-                    }
+                    var roleSearch = await _context.Roles.SingleOrDefaultAsync(w => w.Id == role.Id);
+                    if (roleSearch is null)
+                        return NotFound(new { message = "Tipo de usuário informado é inválido." });
 
-                    roles.Add(hydratedRole);
+                    roles.Add(roleSearch);
                 }
+                model.Roles = roles;
 
-                user.Roles = roles;
-
-                await _context.Users.AddAsync(user);
+                await _context.Users.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { id = user.Id }, user);
+                return CreatedAtRoute(new { id = model.Id }, model);
             }
             catch (Exception ex)
             {
@@ -54,6 +51,7 @@ namespace Agenda.Controllers
         {
             return await _context
                             .Users
+                            .Include(r => r.Roles)
                             .AsNoTracking()
                             .ToListAsync();
         }
@@ -61,7 +59,7 @@ namespace Agenda.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Include(r => r.Roles).SingleAsync(w => w.Id == id);
             if (user is null)
                 return NotFound();
 
@@ -71,21 +69,22 @@ namespace Agenda.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<User>> UpdateUserAsync(int id, [FromBody] User model)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Include(r => r.Roles).SingleOrDefaultAsync(w => w.Id == id);
             if (user is null)
                 return NotFound();
 
-            user.Name = model.Name;
-            user.Password = model.Password;
-            user.Email = model.Email;
-            user.RoleId = model.RoleId;
-            user.LastUpdatedDate = DateTime.UtcNow;
+            _context.Entry(user).CurrentValues.SetValues(model);
+
+            user.Roles.Clear();
+            foreach (var role in model.Roles)
+            {
+                var roleSearch = await _context.Roles.FindAsync(role.Id);
+                user.Roles.Add(roleSearch);
+            }
 
             try
             {
-                _context.Entry<User>(user).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-
                 return NoContent();
             }
             catch (Exception exception)
@@ -98,7 +97,7 @@ namespace Agenda.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUserAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.Include(r => r.Roles).SingleOrDefaultAsync(s => s.Id == id);
             if (user is null)
                 return NotFound();
 

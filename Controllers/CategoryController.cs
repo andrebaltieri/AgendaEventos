@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace AgendaEventos.Controllers
+namespace Agenda.Controllers
 {
     [Route("api/v1/categories")]
     [ApiController]
@@ -68,10 +68,7 @@ namespace AgendaEventos.Controllers
                 if (category is null)
                     return NotFound();
 
-                category.Title = model.Title;
-                category.Description = model.Description;
-                category.Active = model.Active;
-
+                _context.Entry<Category>(category).CurrentValues.SetValues(model);
                 _context.Entry(category).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 

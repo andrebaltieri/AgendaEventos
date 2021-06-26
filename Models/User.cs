@@ -24,6 +24,6 @@ namespace Agenda.Models
 
         [NotMapped]
         public int RoleId { get; set; }
-        public virtual IList<Role> Roles { get; set; }
+        public virtual ICollection<Role> Roles { get; set; }
     }
 }

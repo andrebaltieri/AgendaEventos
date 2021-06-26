@@ -25,12 +25,18 @@ namespace Agenda
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
             services.AddCors();
             services.AddControllers();
+            
+            services.AddDbContext<DataContext>(opt =>
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            );
+
 
             var key = Encoding.ASCII.GetBytes(Settings.SecretKey);
             services.AddAuthentication(x =>
