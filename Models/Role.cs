@@ -18,6 +18,6 @@ namespace Agenda.Models
         [MaxLength(500)]
         public string Description { get; set; }
 
-        //public IList<User> Users { get; set; }
+        public IList<User> Users { get; set; }
     }
 }
