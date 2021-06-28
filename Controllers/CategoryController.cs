@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Agenda.Data;
 using Agenda.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Agenda.Controllers
 {
@@ -21,6 +21,10 @@ namespace Agenda.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Category>> CreateCategoryAsync(Category model)
         {
             try
@@ -38,6 +42,9 @@ namespace Agenda.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteCategoryAsync(int id)
         {
             try
@@ -59,7 +66,31 @@ namespace Agenda.Controllers
             }
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IEnumerable<Category>> GetCategoriesAsync()
+        {
+            return await _context.Categories.AsNoTracking().ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Category>> GetCategoryByIdAsync(int id)
+        {
+            var categories = await _context.Categories.FindAsync(id);
+
+            if (categories is null)
+                return NotFound();
+
+            return Ok(categories);
+        }
+
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateCategoryAsync(int id, Category model)
         {
             try
@@ -79,23 +110,6 @@ namespace Agenda.Controllers
                 System.Diagnostics.Debug.WriteLine(exception.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        [HttpGet]
-        public async Task<IEnumerable<Category>> GetCategoriesAsync()
-        {
-            return await _context.Categories.AsNoTracking().ToListAsync();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategoryByIdAsync(int id)
-        {
-            var categories = await _context.Categories.FindAsync(id);
-
-            if (categories is null)
-                return NotFound();
-
-            return Ok(categories);
         }
     }
 }
