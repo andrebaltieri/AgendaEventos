@@ -91,7 +91,7 @@ namespace Agenda.Controllers
 
                 role.Title = model.Title;
                 role.Description = model.Description;
-                role.LastUpdatedDate = DateTime.Now;
+                role.LastUpdatedDate = DateTime.UtcNow.ToLocalTime();
 
                 _context.Entry(role).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
