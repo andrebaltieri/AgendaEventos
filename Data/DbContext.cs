@@ -10,8 +10,7 @@ namespace Agenda.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
-        { }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Category> Categories { get; set; }
 
@@ -21,7 +20,21 @@ namespace Agenda.Data
 
         public DbSet<User> Users { get; set; }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            SetLastUpdatedDate();
+
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            SetLastUpdatedDate();
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void SetLastUpdatedDate()
         {
             foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Modified))
             {
@@ -30,8 +43,6 @@ namespace Agenda.Data
                     entry.Property(nameof(Entity.LastUpdatedDate)).CurrentValue = DateTime.UtcNow;
                 }
             }
-
-            return base.SaveChangesAsync(cancellationToken);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.LogTo(Console.WriteLine);
