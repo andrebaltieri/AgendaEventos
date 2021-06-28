@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
-using AgendaEventos.Models;
 using Microsoft.IdentityModel.Tokens;
+using Agenda.Models;
+using AgendaEventos.Models;
 
 namespace AgendaEventos.Services
 {
@@ -21,7 +21,7 @@ namespace AgendaEventos.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Name.ToString()),
-                    new Claim(ClaimTypes.Role, user.Roles.FirstOrDefault().ToString())
+                    new Claim(ClaimTypes.Role, user.Roles.FirstOrDefault().Title.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -31,3 +31,29 @@ namespace AgendaEventos.Services
         }        
     }
 }
+
+// [HttpPost("login/{user}/{password}")]
+//         public ActionResult<dynamic> LoAuthenticategin(string user, string password)
+//         {
+//             const string _user = "joao.silva";
+//             const string _password = "123123";
+//             if (!user.Equals(_user) || !password.Equals(_password))
+//                 return NotFound(new {message = "Senha e/ou Usuário inválido(s)."});
+
+//             var userToken = new User()
+//             {
+//                 Id = 1,
+//                 Email = "joao.silva@gmail.com",
+//                 Name = "Joao Silva",
+//                 Roles = new List<Role>()
+//                 {
+//                     new Role(){Id = 1, Description = "Admin", Title = "Administrador do Sistema.F"},
+//                 }
+//             };
+
+//             var token = TokenService.GenerateToken(userToken);
+//             return new {
+//                 user = user,
+//                 token = token
+//             };
+//         }
