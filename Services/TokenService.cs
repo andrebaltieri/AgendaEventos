@@ -3,10 +3,10 @@ using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AgendaEventos.Models;
 using Microsoft.IdentityModel.Tokens;
+using Agenda.Models;
 
-namespace AgendaEventos.Services
+namespace Agenda.Services
 {
     public static class TokenService
     {

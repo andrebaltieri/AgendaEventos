@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Agenda.Data;
 using Agenda.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace AgendaEventos.Controllers
+namespace Agenda.Controllers
 {
     [Route("api/v1/categories")]
     [ApiController]
@@ -21,6 +22,7 @@ namespace AgendaEventos.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Category>> CreateCategoryAsync(Category model)
         {
             try
@@ -38,6 +40,7 @@ namespace AgendaEventos.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> DeleteCategoryAsync(int id)
         {
             try
@@ -60,6 +63,7 @@ namespace AgendaEventos.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> UpdateCategoryAsync(int id, Category model)
         {
             try
@@ -68,10 +72,7 @@ namespace AgendaEventos.Controllers
                 if (category is null)
                     return NotFound();
 
-                category.Title = model.Title;
-                category.Description = model.Description;
-                category.Active = model.Active;
-
+                _context.Entry<Category>(category).CurrentValues.SetValues(model);
                 _context.Entry(category).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
@@ -85,12 +86,14 @@ namespace AgendaEventos.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrador")]
         public async Task<IEnumerable<Category>> GetCategoriesAsync()
         {
             return await _context.Categories.AsNoTracking().ToListAsync();
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Category>> GetCategoryByIdAsync(int id)
         {
             var categories = await _context.Categories.FindAsync(id);

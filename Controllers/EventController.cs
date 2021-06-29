@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using Agenda.Data;
 using Agenda.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +22,7 @@ namespace Agenda.Controllers
         
         [HttpGet]
         [Route("")]
+        [Authorize(Roles = "Administrador,Organizador,Participante")]
         public async Task<List<Event>> Get()
         {
             var events = await _context.Events
@@ -35,6 +34,7 @@ namespace Agenda.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize(Roles = "Administrador,Organizador,Participante")]
         public async Task<Event> GetById(int id)
         {
             var events = await _context.Events
@@ -46,6 +46,7 @@ namespace Agenda.Controllers
 
         [HttpPost]
         [Route("")]
+        [Authorize(Roles = "Organizador")]
         public async Task<ActionResult<Event>> Post([FromBody] Event model)
         {
             if (!ModelState.IsValid)
@@ -68,6 +69,7 @@ namespace Agenda.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "Organizador")]
         public async Task<ActionResult<Event>> Update(int id, [FromBody] Event model)
         {
             if (id != model.Id)

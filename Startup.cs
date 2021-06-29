@@ -1,6 +1,6 @@
 using System.Text;
 using Agenda.Data;
-using AgendaEventos;
+using AgendaEventos.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,18 +19,24 @@ namespace Agenda
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            services.AddControllers();
+
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+            
             services.AddDbContext<DataContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
-            services.AddCors();
-            services.AddControllers();
+            services.AddScoped<UserRepository, UserRepository>();
 
             var key = Encoding.ASCII.GetBytes(Settings.SecretKey);
             services.AddAuthentication(x =>
