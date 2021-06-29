@@ -124,6 +124,11 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Event>> UpdateEventAsync(int id, [FromBody] Event model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest(new { message = "Id do evento é inválido." });
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -134,7 +139,7 @@ namespace Agenda.Controllers
                 var events = await _context.Events.FindAsync(id);
                 if (events is null)
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Evento não encontrado." });
                 }
 
                 if (!await UserExists(model.SpeakerId))
@@ -151,7 +156,7 @@ namespace Agenda.Controllers
 
                 if (!await CategoryExists(model.CategoryId))
                 {
-                    ModelState.AddModelError(nameof(model.Category), "Categoria informada é inválido");
+                    ModelState.AddModelError(nameof(model.Category), "Categoria informada é inválida");
                     return BadRequest(ModelState);
                 }
 

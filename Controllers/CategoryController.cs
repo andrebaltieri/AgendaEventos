@@ -93,14 +93,25 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateCategoryAsync(int id, [FromBody] Category model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest(new { message = "Id da categoria é inválido." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var category = await _context.Categories.FindAsync(id);
                 if (category is null)
-                    return NotFound();
+                {
+                    return NotFound(new { message = "Categoria não encontrada." });
+                }
 
-                _context.Entry<Category>(category).CurrentValues.SetValues(model);
-                _context.Entry(category).State = EntityState.Modified;
+                _context.Entry(category).CurrentValues.SetValues(model);
                 await _context.SaveChangesAsync();
 
                 return NoContent();

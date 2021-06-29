@@ -94,19 +94,25 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateRoleAsync(int id, [FromBody] Role model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest(new { message = "Id do perfil de usuário é inválido." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var role = await _context.Roles.FindAsync(id);
-
                 if (role is null)
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Perfil de usuário não encontrado." });
                 }
 
-                role.Title = model.Title;
-                role.Description = model.Description;
-
-                _context.Entry(role).State = EntityState.Modified;
+                _context.Entry(role).CurrentValues.SetValues(model);
                 await _context.SaveChangesAsync();
 
                 return NoContent();

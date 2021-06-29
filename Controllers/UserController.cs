@@ -119,6 +119,11 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUserAsync(int id, [FromBody] User model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest(new { message = "Id de usuário é inválido." });
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -127,7 +132,7 @@ namespace Agenda.Controllers
             var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
             if (user is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Usuário não encontrado." });
             }
 
             _context.Entry(user).CurrentValues.SetValues(model);
@@ -147,6 +152,7 @@ namespace Agenda.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+
                 return NoContent();
             }
             catch (Exception exception)
