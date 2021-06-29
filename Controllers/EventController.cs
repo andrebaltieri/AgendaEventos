@@ -46,6 +46,12 @@ namespace Agenda.Controllers
                     return BadRequest(ModelState);
                 }
 
+                if (!await CategoryExists(model.CategoryId))
+                {
+                    ModelState.AddModelError(nameof(model.Category), "Categoria informada é inválido");
+                    return BadRequest(ModelState);
+                }
+
                 _context.Events.Add(model);
                 await _context.SaveChangesAsync();
 
@@ -146,6 +152,12 @@ namespace Agenda.Controllers
                     return BadRequest(ModelState);
                 }
 
+                if (!await CategoryExists(model.CategoryId))
+                {
+                    ModelState.AddModelError(nameof(model.Category), "Categoria informada é inválido");
+                    return BadRequest(ModelState);
+                }
+
                 _context.Entry(events).CurrentValues.SetValues(model);
                 await _context.SaveChangesAsync();
 
@@ -157,6 +169,8 @@ namespace Agenda.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        private Task<bool> CategoryExists(int id) => _context.Categories.AnyAsync(c => c.Id == id);
 
         private Task<bool> UserExists(int id) => _context.Users.AnyAsync(u => u.Id == id);
     }
