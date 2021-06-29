@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Agenda.Controllers
 {
@@ -22,17 +21,10 @@ namespace Agenda.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Role>> CreateAsync(Role model)
         {
-            List<string> listOfRole = new List<string> { "Administrador", "Organizador", "Participante" };
-
             try
             {
-                if (!listOfRole.Contains(model.Title))
-                    return BadRequest(new { message = string.Format("Título de role inválida. Favor informar os seguintes tipos válidos: {0}", string.Join(", ", listOfRole)) });
-
-
                 await _context.Roles.AddAsync(model);
                 await _context.SaveChangesAsync();
 
@@ -46,7 +38,6 @@ namespace Agenda.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> DeleteRoleAsync(int id)
         {
             try
@@ -87,7 +78,6 @@ namespace Agenda.Controllers
         public async Task<ActionResult<IEnumerable<Role>>> GetRolesAsync() => Ok(await _context.Roles.AsNoTracking().ToListAsync());
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> UpdateRoleAsync(int id, Role model)
         {
             try
