@@ -1,8 +1,5 @@
 using Agenda.Data;
 using Agenda.Models;
-using Agenda.Services;
-using AgendaEventos.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,40 +13,13 @@ namespace Agenda.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly UserRepository _userRepository;
 
-        public UserController(DataContext context, UserRepository userRepository)
+        public UserController(DataContext context)
         {
             _context = context;
-            _userRepository = userRepository;
         }
-
-        [HttpPost("authenticate")]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
-        {
-            var user = await _userRepository.Authenticate(model.Email, model.Password);
-
-            if (user is null)
-                return NotFound(new { message = "Email e/ou senha inválido(s)." });
-
-
-            var token = TokenService.GenerateToken(user);
-
-            user.Password = string.Empty;
-            return new
-            {
-                user = new 
-                { 
-                    name = user.Name,
-                    email = user.Email 
-                },
-                token = token
-            };
-        }
-
 
         [HttpPost]
-        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,7 +59,6 @@ namespace Agenda.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -115,7 +84,6 @@ namespace Agenda.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<User>> GetUserByIdAsync(int id)
@@ -130,7 +98,6 @@ namespace Agenda.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
@@ -142,7 +109,6 @@ namespace Agenda.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
