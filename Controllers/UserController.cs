@@ -49,7 +49,7 @@ namespace Agenda.Controllers
                 await _context.Users.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { id = model.Id }, model);
+                return CreatedAtRoute(new { action = nameof(GetUserByIdAsync), id = model.Id }, model.Id);
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -67,7 +67,7 @@ namespace Agenda.Controllers
             var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(s => s.Id == id);
             if (user is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Usuário não encontrado." });
             }
 
             try
@@ -83,15 +83,19 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         {
-            var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
+            var user = await _context.Users
+                .Include(r => r.Roles)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
+
             if (user is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Usuário não encontrado." });
             }
 
             return Ok(user);
@@ -108,13 +112,18 @@ namespace Agenda.Controllers
                 .ToListAsync();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUserAsync(int id, [FromBody] User model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest(new { message = "Id de usuário é inválido." });
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -123,7 +132,7 @@ namespace Agenda.Controllers
             var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
             if (user is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Usuário não encontrado." });
             }
 
             _context.Entry(user).CurrentValues.SetValues(model);
@@ -143,6 +152,7 @@ namespace Agenda.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+
                 return NoContent();
             }
             catch (Exception exception)

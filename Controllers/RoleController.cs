@@ -21,14 +21,23 @@ namespace Agenda.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Role>> CreateAsync(Role model)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Role>> CreateRoleAsync([FromBody] Role model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 await _context.Roles.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { id = model.Id }, model);
+                return CreatedAtRoute(new { action = nameof(GetRoleByIdAsync), id = model.Id }, model.Id);
             }
             catch (Exception ex)
             {
@@ -37,7 +46,10 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteRoleAsync(int id)
         {
             try
@@ -46,7 +58,7 @@ namespace Agenda.Controllers
 
                 if (role is null)
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Perfil de usuário não encontrado" });
                 }
 
                 _context.Roles.Remove(role);
@@ -61,38 +73,51 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoleByIdAsync(int id)
         {
             var role = await _context.Roles.FindAsync(id);
 
             if (role is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Perfil de usuário não encontrado" });
             }
 
             return Ok(role);
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Role>>> GetRolesAsync() => Ok(await _context.Roles.AsNoTracking().ToListAsync());
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateRoleAsync(int id, Role model)
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> UpdateRoleAsync(int id, [FromBody] Role model)
         {
+            if (id != model.Id)
+            {
+                return BadRequest(new { message = "Id do perfil de usuário é inválido." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var role = await _context.Roles.FindAsync(id);
-
                 if (role is null)
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Perfil de usuário não encontrado." });
                 }
 
-                role.Title = model.Title;
-                role.Description = model.Description;
-
-                _context.Entry(role).State = EntityState.Modified;
+                _context.Entry(role).CurrentValues.SetValues(model);
                 await _context.SaveChangesAsync();
 
                 return NoContent();
