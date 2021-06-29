@@ -20,18 +20,53 @@ namespace Agenda.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Event>> CreateEventAsync([FromBody] Event model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                if (!await UserExists(model.SpeakerId))
+                {
+                    ModelState.AddModelError(nameof(model.Speaker), "Palestrante informado é inválido");
+                    return BadRequest(ModelState);
+                }
+
+                if (!await UserExists(model.OrganizerId))
+                {
+                    ModelState.AddModelError(nameof(model.Organizer), "Organizador informado é inválido");
+                    return BadRequest(ModelState);
+                }
+
+                _context.Events.Add(model);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtRoute(new { action = nameof(GetEventById), id = model.Id }, model.Id);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete]
         [Route("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Event>> Delete(int id)
+        public async Task<ActionResult<Event>> DeleteEventAsync(int id)
         {
-            var events = await _context.Events
-                .Include(e => e.Category)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
-            if (events == null)
+            var events = await _context.Events.FindAsync(id);
+            if (events is null)
             {
                 return NotFound(new { message = "Evento não encontrado" });
             }
@@ -40,62 +75,42 @@ namespace Agenda.Controllers
             {
                 _context.Remove(events);
                 await _context.SaveChangesAsync();
-                return Ok();
+                return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Não foi possível remover o evento" });
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<Event>> Get()
-        {
-            var events = await _context.Events
-                .Include(e => e.Category)
-                .AsNoTracking()
-                .ToListAsync();
-            return events;
         }
 
         [HttpGet]
         [Route("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<Event> GetById(int id)
+        public async Task<ActionResult<Event>> GetEventById(int id)
         {
             var events = await _context.Events
                 .Include(e => e.Category)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
-            return events;
+
+            if (events is null)
+            {
+                NotFound();
+            }
+
+            return Ok(events);
         }
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Event>> Post([FromBody] Event model)
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(model);
-            }
-
-            try
-            {
-                model.StartDate = model.StartDate.ToUniversalTime();
-                model.EnrollmentDeadlineDate = model.EnrollmentDeadlineDate.ToUniversalTime();
-                _context.Events.Add(model);
-                await _context.SaveChangesAsync();
-                return model;
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { message = "Não foi possível criar o evento" });
-            }
+            return await _context.Events
+                .Include(e => e.Category)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         [HttpPut]
@@ -104,11 +119,8 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Event>> Update(int id, [FromBody] Event model)
+        public async Task<ActionResult<Event>> UpdateEventAsync(int id, [FromBody] Event model)
         {
-            if (id != model.Id)
-                return NotFound(new { message = "Evento não encontrado" });
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -116,16 +128,36 @@ namespace Agenda.Controllers
 
             try
             {
-                model.StartDate = model.StartDate.ToUniversalTime();
-                model.EnrollmentDeadlineDate = model.EnrollmentDeadlineDate.ToUniversalTime();
-                _context.Entry<Event>(model).State = EntityState.Modified;
+                var events = await _context.Events.FindAsync(id);
+                if (events is null)
+                {
+                    return NotFound();
+                }
+
+                if (!await UserExists(model.SpeakerId))
+                {
+                    ModelState.AddModelError(nameof(model.Speaker), "Palestrante informado é inválido");
+                    return BadRequest(ModelState);
+                }
+
+                if (!await UserExists(model.OrganizerId))
+                {
+                    ModelState.AddModelError(nameof(model.Organizer), "Organizador informado é inválido");
+                    return BadRequest(ModelState);
+                }
+
+                _context.Entry(events).CurrentValues.SetValues(model);
                 await _context.SaveChangesAsync();
-                return model;
+
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Não foi possível atualizar o evento" });
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        private Task<bool> UserExists(int id) => _context.Users.AnyAsync(u => u.Id == id);
     }
 }
