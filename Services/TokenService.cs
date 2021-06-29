@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Agenda.Models;
-
 namespace Agenda.Services
 {
     public static class TokenService
