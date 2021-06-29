@@ -58,7 +58,7 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -83,12 +83,16 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<User>> GetUserByIdAsync(int id)
         {
-            var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(w => w.Id == id);
+            var user = await _context.Users
+                .Include(r => r.Roles)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
+
             if (user is null)
             {
                 return NotFound();
@@ -108,7 +112,7 @@ namespace Agenda.Controllers
                 .ToListAsync();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
