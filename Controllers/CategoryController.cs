@@ -57,7 +57,7 @@ namespace Agenda.Controllers
                 var category = await _context.Categories.FindAsync(id);
 
                 if (category is null)
-                    return NotFound();
+                    return NotFound(new { message = "Categoria não encontrada" });
 
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
@@ -86,7 +86,7 @@ namespace Agenda.Controllers
             var categories = await _context.Categories.FindAsync(id);
 
             if (categories is null)
-                return NotFound();
+                return NotFound(new { message = "Categoria não encontrada" });
 
             return Ok(categories);
         }

@@ -101,7 +101,7 @@ namespace Agenda.Controllers
 
             if (events is null)
             {
-                NotFound();
+                return NotFound(new { message = "Evento não encontrado" });
             }
 
             return Ok(events);

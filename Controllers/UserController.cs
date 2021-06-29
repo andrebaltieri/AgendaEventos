@@ -67,7 +67,7 @@ namespace Agenda.Controllers
             var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(s => s.Id == id);
             if (user is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Usuário não encontrado." });
             }
 
             try
@@ -95,7 +95,7 @@ namespace Agenda.Controllers
 
             if (user is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Usuário não encontrado." });
             }
 
             return Ok(user);

@@ -58,7 +58,7 @@ namespace Agenda.Controllers
 
                 if (role is null)
                 {
-                    return NotFound();
+                    return NotFound(new { message = "Perfil de usuário não encontrado" });
                 }
 
                 _context.Roles.Remove(role);
@@ -82,7 +82,7 @@ namespace Agenda.Controllers
 
             if (role is null)
             {
-                return NotFound();
+                return NotFound(new { message = "Perfil de usuário não encontrado" });
             }
 
             return Ok(role);
