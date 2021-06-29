@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Agenda.Data;
 using Agenda.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Agenda.Controllers
 {
@@ -18,7 +18,7 @@ namespace Agenda.Controllers
         {
             _context = context;
         }
-        
+
         [HttpGet]
         [Route("")]
         public async Task<List<Event>> Get()
@@ -52,23 +52,24 @@ namespace Agenda.Controllers
 
             try
             {
+                model.StartDate = model.StartDate.ToUniversalTime();
+                model.EnrollmentDeadlineDate = model.EnrollmentDeadlineDate.ToUniversalTime();
                 _context.Events.Add(model);
                 await _context.SaveChangesAsync();
                 return model;
             }
             catch (Exception)
             {
-                return BadRequest(new {message = "Não foi possível criar o evento"});
+                return BadRequest(new { message = "Não foi possível criar o evento" });
             }
         }
-
 
         [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<Event>> Update(int id, [FromBody] Event model)
         {
             if (id != model.Id)
-                return NotFound(new {message = "Evento não encontrado"});
+                return NotFound(new { message = "Evento não encontrado" });
 
             if (!ModelState.IsValid)
             {
@@ -77,13 +78,15 @@ namespace Agenda.Controllers
 
             try
             {
+                model.StartDate = model.StartDate.ToUniversalTime();
+                model.EnrollmentDeadlineDate = model.EnrollmentDeadlineDate.ToUniversalTime();
                 _context.Entry<Event>(model).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return model;
             }
             catch (DbUpdateConcurrencyException)
             {
-                return BadRequest(new {message = "Não foi possível atualizar o evento"});
+                return BadRequest(new { message = "Não foi possível atualizar o evento" });
             }
         }
 
@@ -97,9 +100,9 @@ namespace Agenda.Controllers
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (events == null)
             {
-                return NotFound(new {message = "Evento não encontrado"});
+                return NotFound(new { message = "Evento não encontrado" });
             }
-            
+
             try
             {
                 _context.Remove(events);
@@ -108,10 +111,9 @@ namespace Agenda.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new {message = "Não foi possível remover o evento"});
+                return BadRequest(new { message = "Não foi possível remover o evento" });
             }
         }
 
-       
     }
 }

@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Agenda.Data
 {
@@ -10,9 +13,37 @@ namespace Agenda.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Category> Categories { get; set; }
+
         public DbSet<Event> Events { get; set; }
+
         public DbSet<Role> Roles { get; set; }
+
         public DbSet<User> Users { get; set; }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            SetLastUpdatedDate();
+
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            SetLastUpdatedDate();
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void SetLastUpdatedDate()
+        {
+            foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Modified))
+            {
+                if (entry.Metadata.GetProperties().Any(p => p.Name == nameof(Entity.LastUpdatedDate)))
+                {
+                    entry.Property(nameof(Entity.LastUpdatedDate)).CurrentValue = DateTime.UtcNow;
+                }
+            }
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.LogTo(Console.WriteLine);
 
