@@ -25,7 +25,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Category>> CreateCategoryAsync(Category model)
+        public async Task<ActionResult<Category>> CreateCategoryAsync([FromBody] Category model)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateCategoryAsync(int id, Category model)
+        public async Task<ActionResult> UpdateCategoryAsync(int id, [FromBody] Category model)
         {
             try
             {

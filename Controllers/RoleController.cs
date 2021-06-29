@@ -25,7 +25,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Role>> CreateAsync(Role model)
+        public async Task<ActionResult<Role>> CreateAsync([FromBody] Role model)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateRoleAsync(int id, Role model)
+        public async Task<ActionResult> UpdateRoleAsync(int id, [FromBody] Role model)
         {
             try
             {
