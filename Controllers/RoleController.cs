@@ -32,7 +32,7 @@ namespace Agenda.Controllers
                 await _context.Roles.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { id = model.Id }, model);
+                return CreatedAtRoute(new { action = nameof(GetRoleByIdAsync), id = model.Id }, model.Id);
             }
             catch (Exception ex)
             {

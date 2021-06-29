@@ -49,7 +49,7 @@ namespace Agenda.Controllers
                 await _context.Users.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { id = model.Id }, model);
+                return CreatedAtRoute(new { action = nameof(GetUserByIdAsync), id = model.Id }, model.Id);
             }
             catch (Exception ex)
             {
