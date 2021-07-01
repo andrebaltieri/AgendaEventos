@@ -1,5 +1,6 @@
 using Agenda.Data;
 using Agenda.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace Agenda.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrador,Organizador")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -65,6 +67,7 @@ namespace Agenda.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrador,Organizador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -90,6 +93,7 @@ namespace Agenda.Controllers
         }
 
         [HttpGet("{id:int}", Name = nameof(GetEventByIdAsync))]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Event>> GetEventByIdAsync(int id)
@@ -108,6 +112,7 @@ namespace Agenda.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Event>>> GetEventsAsync()
         {
@@ -118,6 +123,7 @@ namespace Agenda.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Administrador,Organizador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

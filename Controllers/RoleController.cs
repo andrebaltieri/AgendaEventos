@@ -1,5 +1,6 @@
 using Agenda.Data;
 using Agenda.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Role>> CreateRoleAsync([FromBody] Role model)
         {
             if (!ModelState.IsValid)
@@ -50,6 +52,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> DeleteRoleAsync(int id)
         {
             try
@@ -76,6 +79,7 @@ namespace Agenda.Controllers
         [HttpGet("{id:int}", Name = nameof(GetRoleByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoleByIdAsync(int id)
         {
             var role = await _context.Roles.FindAsync(id);
@@ -90,6 +94,7 @@ namespace Agenda.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Role>>> GetRolesAsync() => Ok(await _context.Roles.AsNoTracking().ToListAsync());
 
         [HttpPut("{id:int}")]
@@ -97,6 +102,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> UpdateRoleAsync(int id, [FromBody] Role model)
         {
             if (id != model.Id)
