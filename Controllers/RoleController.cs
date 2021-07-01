@@ -37,7 +37,7 @@ namespace Agenda.Controllers
                 await _context.Roles.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { action = nameof(GetRoleByIdAsync), id = model.Id }, model.Id);
+                return CreatedAtRoute(nameof(GetRoleByIdAsync), new { id = model.Id }, model.Id);
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = nameof(GetRoleByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoleByIdAsync(int id)
