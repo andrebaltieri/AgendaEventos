@@ -1,5 +1,6 @@
 using Agenda.Data;
 using Agenda.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<Category>> CreateCategoryAsync([FromBody] Category model)
         {
             if (!ModelState.IsValid)
@@ -50,6 +52,7 @@ namespace Agenda.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult> DeleteCategoryAsync(int id)
         {
             try
@@ -73,12 +76,14 @@ namespace Agenda.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IEnumerable<Category>> GetCategoriesAsync()
         {
             return await _context.Categories.AsNoTracking().ToListAsync();
         }
 
         [HttpGet("{id:int}", Name = nameof(GetCategoryByIdAsync))]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Category>> GetCategoryByIdAsync(int id)
@@ -92,6 +97,7 @@ namespace Agenda.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Administrador")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

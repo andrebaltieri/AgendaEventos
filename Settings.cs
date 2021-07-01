@@ -1,4 +1,4 @@
-namespace AgendaEventos
+namespace Agenda
 {
     public static class Settings
     {
