@@ -49,7 +49,7 @@ namespace Agenda.Controllers
                 await _context.Users.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { action = nameof(GetUserByIdAsync), id = model.Id }, model.Id);
+                return CreatedAtRoute(nameof(GetUserByIdAsync), new { id = model.Id }, model.Id);
             }
             catch (Exception ex)
             {
@@ -83,7 +83,7 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = nameof(GetUserByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<User>> GetUserByIdAsync(int id)

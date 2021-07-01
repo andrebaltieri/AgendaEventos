@@ -55,7 +55,7 @@ namespace Agenda.Controllers
                 _context.Events.Add(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { action = nameof(GetEventByIdAsync), id = model.Id }, model.Id);
+                return CreatedAtRoute(nameof(GetEventByIdAsync), new { id = model.Id }, model.Id);
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace Agenda.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = nameof(GetEventByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Event>> GetEventByIdAsync(int id)

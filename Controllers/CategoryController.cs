@@ -37,7 +37,7 @@ namespace Agenda.Controllers
                 await _context.Categories.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtRoute(new { action = nameof(GetCategoryByIdAsync), id = model.Id }, model.Id);
+                return CreatedAtRoute(nameof(GetCategoryByIdAsync), new { id = model.Id }, model.Id);
             }
             catch (Exception exception)
             {
@@ -78,7 +78,7 @@ namespace Agenda.Controllers
             return await _context.Categories.AsNoTracking().ToListAsync();
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = nameof(GetCategoryByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Category>> GetCategoryByIdAsync(int id)
