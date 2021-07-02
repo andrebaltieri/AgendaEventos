@@ -94,7 +94,7 @@ namespace Agenda.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<IEnumerable<Role>>> GetRolesAsync() => Ok(await _context.Roles.AsNoTracking().ToListAsync());
 
         [HttpPut("{id:int}")]
