@@ -79,7 +79,7 @@ namespace Agenda.Controllers
         [HttpGet("{id:int}", Name = nameof(GetRoleByIdAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoleByIdAsync(int id)
         {
             var role = await _context.Roles.FindAsync(id);
