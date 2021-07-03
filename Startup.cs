@@ -1,6 +1,9 @@
 using System.Text;
 using Agenda.Data;
 using Agenda.Repositories;
+using Agenda.Services;
+using AgendaEventos.Repositories.Interface;
+using AgendaEventos.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,7 +40,8 @@ namespace Agenda
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
 
-            services.AddTransient<UserRepository, UserRepository>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserRepository, UserRepository>();
             
             var key = Encoding.ASCII.GetBytes(Settings.SecretKey);
             services.AddAuthentication(x =>

@@ -1,7 +1,8 @@
 using Agenda.Data;
 using Agenda.Models;
-using Agenda.Repositories;
 using Agenda.Services;
+using AgendaEventos.Repositories.Interface;
+using AgendaEventos.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +17,14 @@ namespace Agenda.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UserController(DataContext context, UserRepository userRepository)
+        public UserController(DataContext context, IUserRepository userRepository, IUserService userService)
         {
             _context = context;
             _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpPost("authenticate")]
@@ -39,11 +42,11 @@ namespace Agenda.Controllers
             return new
             {
                 user = new
-                    {
-                        name = user.Name,
-                        email = user.Email
-                        },
-                        token = token
+                {
+                    name = user.Name,
+                    email = user.Email
+                },
+                token = token
             };
         }
 
@@ -59,6 +62,10 @@ namespace Agenda.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            var emailExist = await _userService.CheckIfEmailAlreadyRegistered(model);
+            if (emailExist)
+                return BadRequest(new { message = "E-Mail já registrado para outro usuário." });
 
             try
             {
