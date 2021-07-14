@@ -1,0 +1,744 @@
+{
+	"info": {
+		"_postman_id": "42cdb8ab-c203-4a3b-ac5b-adfd91cff358",
+		"name": "Rotas disponiveis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authenticacao via JWT",
+			"item": [
+				{
+					"name": "Gerar token ao autenticar usuario com sucesso",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@balta.io\", //Administrador\r\n    \"password\": \"admin\"\r\n}\r\n\r\n/*\r\n{\r\n    \"email\": \"teste@gmail.com\", //Participante\r\n    \"password\": \"teste\"\r\n}\r\n\r\n\r\n{\r\n    \"email\": \"admin@balta.io\", //Administrador\r\n    \"password\": \"admin\"\r\n}\r\n\r\n{\r\n    \"email\": \"teste2@teste.com\", //Organizador\r\n    \"password\": \"teste\"\r\n}\r\n\r\n\r\n\r\n{\r\n    \"email\": \"teste2@teste.com\", //Palestrante\r\n    \"password\": \"teste\"\r\n}\r\n\r\n\r\n\r\n*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/users/authenticate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Users",
+			"item": [
+				{
+					"name": "Consultar usuarios disponiveis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/users/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar por um usuario especifico",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/users/7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incluir novo usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"Email\": \"admin2@balta.io\",\r\n\"Name\": \"Admin2\",\r\n\"Password\": \"teste\",\r\n\"Roles\": [{\r\n    \"Id\": 5,\r\n    \"Title\": \"Administrador\",\r\n    \"Description\": \"Usuario administrador do sistema de Agenda.\"\r\n    }\r\n]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/users/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar um usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"id\": 23,\r\n\"email\": \"admin2@balta.io\",\r\n\"name\": \"Admin 2\",\r\n\"password\": \"teste\",\r\n\"roles\": [{\r\n    \"id\": 5,\r\n    \"title\": \"Administrador\",\r\n    \"description\": \"Usuario administrador do sistema de Agenda.\"\r\n    }\r\n]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/users/23",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/users/6",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Roles",
+			"item": [
+				{
+					"name": "Consultar roles disponiveis",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/roles",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						},
+						"description": "Consultar roles"
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar por uma role especifica",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/roles/8",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incluir nova role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"title\": \"Gestor Operacional\", \r\n\"description\": \"Responsavel pela gestao operacional.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/roles",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar uma role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"id\": \"17\",\r\n\"title\": \"Gestor Operacional 2\", \r\n\"description\": \"Responsavel pela gestao operacional.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/roles/17",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/roles/17",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Categories",
+			"item": [
+				{
+					"name": "Consultar categorias disponiveis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/categories",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar por uma categoria especifica",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/categories/7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incluir nova categoria",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"title\": \"Banco de Dados\",\r\n\"description\": \"Categoria criada para eventos com o tema banco de dados.\",\r\n\"active\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/categories",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar uma categoria",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"id\": 19,\r\n\"title\": \"Banco de Dados 2\",\r\n\"description\": \"Categoria criada para eventos com o tema banco de dados.\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/categories/19",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir categoria",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/categories/19",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"19"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CRUD Events",
+			"item": [
+				{
+					"name": "Consultar eventos disponiveis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/events",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar por um evento especifico",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/events/12",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Incluir novo evento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"Title\": \"Novidades do .NET Framework 6\",\r\n\"SpeakerId\": 23,\r\n\"Description\": \"Esse evento vai ser muito bom. Nao perca!\",\r\n\"StartDate\": \"2021-07-06\",\r\n\"DurationInMinutes\": \"60\",\r\n\"EnrollmentDeadlineDate\": \"2021-07-05\",\r\n\"UrlSegment\": \"evento-de-dotnet\",\r\n\"BannerUrl\": \"banner-do-evento-de-dotnet\",\r\n\"OrganizerId\": 23,\r\n\"CategoryId\": 6\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/events",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar um evento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \".NET Framework 6\",\r\n    \"speakerId\": 23,\r\n    \"speaker\": null,\r\n    \"description\": \"Esse evento vai ser muito bom. Nao perca!\",\r\n    \"startDate\": \"2021-07-06T00:00:00\",\r\n    \"durationInMinutes\": 60,\r\n    \"enrollmentDeadlineDate\": \"2021-07-05T00:00:00\",\r\n    \"urlSegment\": \"evento-de-dotnet\",\r\n    \"bannerUrl\": \"banner-do-evento-de-dotnet\",\r\n    \"active\": false,\r\n    \"organizerId\": 23,\r\n    \"organizer\": null,\r\n    \"categoryId\": 6,\r\n    \"category\": {\r\n        \"title\": \"Desenvolvimento Backend\",\r\n        \"description\": \"Desenvolvimento Backend refere-se ao desenvolvimento \\\"server side\\\" (no lado do servidor) onde focamos principalmente em como o site funciona.\",\r\n        \"active\": true,\r\n        \"createdDate\": \"2021-06-30T19:13:49\",\r\n        \"id\": 6,\r\n        \"lastUpdatedDate\": null\r\n    },\r\n    \"createdDate\": \"2021-07-06T17:15:47.797\",\r\n    \"id\": 12,\r\n    \"lastUpdatedDate\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1/events/12",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir evento",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluaXN0cmFkb3IiLCJuYmYiOjE2MjU1ODYzMjEsImV4cCI6MTYyNTU4OTkyMSwiaWF0IjoxNjI1NTg2MzIxfQ.TPS4eWyva6pz8AIMEFnKCVAlJEn48rfabwzX38yXvUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/v1/events/12",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"12"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
